@@ -158,7 +158,7 @@ Analyzes:
 
 ### ShadowWire Integration
 
-**API Base**: `https://shadow.radr.fun/shadowpay`
+**API Base**: `@radr/Shadowwire`
 
 - **External Mode**: Groth16 ZK proofs hide sender
 - **Internal Mode**: Bulletproofs + ElGamal hide everything
@@ -200,7 +200,7 @@ The `/learn` page covers:
 ## 📝 Demo Video Script
 
 **0:00-0:30 - Problem**: Show whale wallet exposure on explorer
-**0:30-1:00 - Solution**: Introduce Shieldlane dashboard
+**0:30-1:00 - Solution**: Introduce SF PRVT dashboard
 **1:00-2:00 - Demo**: Execute stealth transfer, show hidden data
 **2:00-2:30 - Technical**: Explain cryptographic primitives
 **2:30-3:00 - CTA**: Privacy is choice, try on devnet

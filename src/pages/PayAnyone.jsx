@@ -22,7 +22,7 @@ import {
 } from "../utils/shadowwireService";
 
 const PayAnyone = () => {
-  const { connected, publicKey, signMessage, wallet } = useWallet();
+  const { connected, publicKey, signMessage } = useWallet();
   const { connection } = useConnection();
 
   // Form state

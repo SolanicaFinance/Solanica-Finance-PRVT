@@ -25,6 +25,8 @@ import {
 
 const PayAnyone = () => {
     const { connected, publicKey, signMessage } = useWallet();
+    const [myBalance, setMyBalance] = useState(0);
+
 
  
   useEffect(() => {

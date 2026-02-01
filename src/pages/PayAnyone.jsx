@@ -22,7 +22,8 @@ import {
 } from "../utils/shadowwireService";
 
 const PayAnyone = () => {
-  const { connected, publicKey, signMessage } = useWallet();
+  const { connected, publicKey, signMessage, wallet } = useWallet();
+  const { connection } = useConnection();
 
   // Form state
   const [recipient, setRecipient] = useState("");

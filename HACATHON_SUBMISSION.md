@@ -9,7 +9,7 @@ We believe financial privacy is a fundamental human right—as essential as free
 
 "Privacy is not about having something to hide. Privacy is about having something to protect."
 
-Read our full philosophical background: PHILOSOPHY.md
+Read our full philosophical background: PHILOSOPHY.md.
 
 How It Works
 ShadowWire Flow (Bulletproofs):
@@ -23,7 +23,7 @@ Privacy Modes:
 
 Stealth: Maximum privacy, one-time addresses
 Mixed: Balanced privacy/cost
-Public: Minimal privacy, lowest cost
+Public: Minimal privacy, lowest cost.
 
 Bounty-Specific Requirements
 

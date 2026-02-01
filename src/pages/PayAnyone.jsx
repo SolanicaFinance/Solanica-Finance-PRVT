@@ -24,8 +24,6 @@ import {
 
 const PayAnyone = () => {
   const { connected, publicKey, signMessage } = useWallet();
-   const [solPrice, setSolPrice] = useState(null);
-   const [myBalance, setMyBalance] = useState(0); 
 
   // Form state
   const [recipient, setRecipient] = useState("");
@@ -44,6 +42,7 @@ const PayAnyone = () => {
   const [recentPayments, setRecentPayments] = useState([]);
 
   // UI state
+  const [balance, setBalance] = useState({ available: 0 });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -53,26 +52,12 @@ const PayAnyone = () => {
   const tokens = getSupportedTokens();
   const quickAmounts = [0.1, 0.5, 1, 5, 10];
 
-    useEffect(() => {
-    // Fetch SOL price
-    const fetchSolPrice = async () => {
-      const data = await getSolanaPrice();
-      setSolPrice(data);
-    };
-    fetchSolPrice();
-    const interval = setInterval(fetchSolPrice, 60000); // Update every minute
-    return () => clearInterval(interval);
-  }, []);
-
   useEffect(() => {
-    // Fetch user's balance if connected
-    const fetchBalance = async () => {
-      if (connected && publicKey) {
-        const balance = await getWalletBalance(publicKey.toBase58());
-        setMyBalance(balance);
-      }
-    };
-    fetchBalance();
+    if (connected && publicKey) {
+      loadBalance();
+      loadContacts();
+      loadRecentPayments();
+    }
   }, [connected, publicKey]);
 
   useEffect(() => {
@@ -232,7 +217,7 @@ const PayAnyone = () => {
         </p>
       </div>
 
-       {/* Your Balance */}
+    {/* Your Balance */}
         <div className="p-5 md:p-6 rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-gray-400 font-medium">Your Balance</p>
@@ -243,7 +228,6 @@ const PayAnyone = () => {
           </p>
           <p className="text-xs md:text-sm text-gray-500">SOL</p>
         </div>
-
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Pay Form */}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   Send,
   Wallet,
@@ -14,6 +14,15 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import {
+  getWalletBalance,
+  getWalletTransactions,
+  getTokenBalances,
+  getWalletStats,
+  formatAddress,
+  formatTimestamp,
+  getTransactionType,
+} from "../utils/solanaService"
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getWalletBalance } from "../utils/solanaService";
 import {
@@ -24,34 +33,69 @@ import {
 } from "../utils/shadowwireService";
 
 const PayAnyone = () => {
-    const { connected, publicKey, signMessage } = useWallet();
-  const [solPrice, setSolPrice] = useState(null);
-  const [myBalance, setMyBalance] = useState(0);
+  const { connected, publicKey, signMessage, disconnect, wallet } = useWallet();
+  const { connection } = useConnection();
 
-  useEffect(() => {
-    // Fetch SOL price
-    const fetchSolPrice = async () => {
-      const data = await getSolanaPrice();
-      setSolPrice(data);
-    };
-    fetchSolPrice();
-    const interval = setInterval(fetchSolPrice, 60000); // Update every minute
-    return () => clearInterval(interval);
-  }, []);
+  // State
+  const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [shadowBalance, setShadowBalance] = useState(null);
+  const [tokens, setTokens] = useState([]);
+  const [transactions, setTransactions] = useState([]);
 
+
+  // ShadowWire state
+  const [shadowMode, setShadowMode] = useState("deposit"); // 'deposit' or 'withdraw'
+  const [shadowLoading, setShadowLoading] = useState(false);
+  const [shadowSuccess, setShadowSuccess] = useState("");
+  const [isRecipient, setIsRecipient] = useState(false);
+
+  // Load wallet data
   useEffect(() => {
-    // Fetch user's balance if connected
-    const fetchBalance = async () => {
-      if (connected && publicKey) {
-        const balance = await getWalletBalance(publicKey.toBase58());
-        setMyBalance(balance);
+    if (connected && publicKey) {
+      loadWalletData();
+    }
+  }, [connected, publicKey, connection]);
+
+  const loadWalletData = async () => {
+    if (!publicKey || !connection) return;
+
+    setLoading(true);
+    try {
+      const address = publicKey.toBase58();
+
+      // Load all data in parallel
+      const [balanceData, tokensData, txData, statsData] = await Promise.all([
+        getWalletBalance(address, connection),
+        getTokenBalances(address, connection),
+        getWalletTransactions(address, connection, 20),
+        getWalletStats(address, connection),
+      ]);
+
+      setBalance(balanceData);
+      setTokens(tokensData);
+      setTransactions(txData);
+      setStats(statsData);
+
+      // Try to load ShadowWire balance
+      try {
+        const shadowBal = await getShadowWireBalance(address, connection);
+        setShadowBalance(shadowBal);
+        // If we got balance, assume registered
+        setIsRecipient(true);
+      } catch (err) {
+        console.log("ShadowWire balance not available");
+        setShadowBalance(null);
+        setIsRecipient(false);
       }
-    };
-    fetchBalance();
-  }, [connected, publicKey]);
+    } catch (error) {
+      console.error("Error loading wallet data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
- 
- 
+  
   // Contact state
   const [contacts, setContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

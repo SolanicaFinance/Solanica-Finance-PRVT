@@ -25,10 +25,20 @@ import {
 
 const PayAnyone = () => {
     const { connected, publicKey, signMessage } = useWallet();
-    const [myBalance, setMyBalance] = useState(0);
+  const [solPrice, setSolPrice] = useState(null);
+  const [myBalance, setMyBalance] = useState(0);
 
+  useEffect(() => {
+    // Fetch SOL price
+    const fetchSolPrice = async () => {
+      const data = await getSolanaPrice();
+      setSolPrice(data);
+    };
+    fetchSolPrice();
+    const interval = setInterval(fetchSolPrice, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
 
- 
   useEffect(() => {
     // Fetch user's balance if connected
     const fetchBalance = async () => {
@@ -40,6 +50,8 @@ const PayAnyone = () => {
     fetchBalance();
   }, [connected, publicKey]);
 
+ 
+ 
   // Contact state
   const [contacts, setContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

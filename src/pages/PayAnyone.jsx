@@ -24,6 +24,8 @@ import {
 
 const PayAnyone = () => {
   const { connected, publicKey, signMessage } = useWallet();
+   const [solPrice, setSolPrice] = useState(null);
+   const [myBalance, setMyBalance] = useState(0); 
 
   // Form state
   const [recipient, setRecipient] = useState("");
@@ -42,7 +44,6 @@ const PayAnyone = () => {
   const [recentPayments, setRecentPayments] = useState([]);
 
   // UI state
-  const [balance, setBalance] = useState({ available: 0 });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -52,12 +53,26 @@ const PayAnyone = () => {
   const tokens = getSupportedTokens();
   const quickAmounts = [0.1, 0.5, 1, 5, 10];
 
+    useEffect(() => {
+    // Fetch SOL price
+    const fetchSolPrice = async () => {
+      const data = await getSolanaPrice();
+      setSolPrice(data);
+    };
+    fetchSolPrice();
+    const interval = setInterval(fetchSolPrice, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
-    if (connected && publicKey) {
-      loadBalance();
-      loadContacts();
-      loadRecentPayments();
-    }
+    // Fetch user's balance if connected
+    const fetchBalance = async () => {
+      if (connected && publicKey) {
+        const balance = await getWalletBalance(publicKey.toBase58());
+        setMyBalance(balance);
+      }
+    };
+    fetchBalance();
   }, [connected, publicKey]);
 
   useEffect(() => {
@@ -217,18 +232,18 @@ const PayAnyone = () => {
         </p>
       </div>
 
-      {/* Balance Card */}
-      <div className="p-6 rounded-3xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-gray-400 mb-1">Available Balance</p>
-            <p className="text-3xl font-bold text-white">
-               {myBalance.toFixed(4)} {selectedToken}
-            </p>
+       {/* Your Balance */}
+        <div className="p-5 md:p-6 rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-gray-400 font-medium">Your Balance</p>
+            <Wallet className="w-5 h-5 text-blue-400" />
           </div>
-          <Wallet className="w-12 h-12 text-white/20" />
+          <p className="text-2xl md:text-3xl font-bold text-white mb-1">
+            {myBalance.toFixed(4)}
+          </p>
+          <p className="text-xs md:text-sm text-gray-500">SOL</p>
         </div>
-      </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Pay Form */}

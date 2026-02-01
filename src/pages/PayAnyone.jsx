@@ -220,9 +220,9 @@ const PayAnyone = () => {
       <div className="p-6 rounded-3xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-gray-400 mb-1">Available Balance</p>
-              <p className="text-2xl sm:text-3xl font-bold text-white">
-              {balance.toFixed(4)}
+           <p className="text-sm text-gray-400 mb-1">Available Balance</p>
+            <p className="text-3xl font-bold text-white">
+              {balance.available.toFixed(4)} {selectedToken}
             </p>
           </div>
           <Wallet className="w-12 h-12 text-white/20" />

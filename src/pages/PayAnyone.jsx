@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+ import React, { useState, useEffect } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
   Send,
   Wallet,
@@ -26,34 +26,13 @@ import {
 } from "../utils/solanaService";
 import {
   getShadowWireBalance,
-  depositToShadowWire,
-  withdrawFromShadowWire,
-  registerAsRecipient,
+  makePrivateTransfer,
+  checkRecipientExists,
+  getSupportedTokens,
 } from "../utils/shadowwireService";
-import { API_CONFIG } from "../utils/apiConfig";
-
 
 const PayAnyone = () => {
-  const { connected, publicKey, signMessage, disconnect, wallet } = useWallet();
-  const { connection } = useConnection();
-
-  // State
-  const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState(0);
-  const [shadowBalance, setShadowBalance] = useState(null);
-  const [transactions, setTransactions] = useState([]);
-  const [stats, setStats] = useState(null);
-  const [activeTab, setActiveTab] = useState("overview");
-  const [copied, setCopied] = useState(false);
-
-  // ShadowWire state
-  const [depositAmount, setDepositAmount] = useState("");
-  const [withdrawAmount, setWithdrawAmount] = useState("");
-  const [shadowMode, setShadowMode] = useState("deposit"); // 'deposit' or 'withdraw'
-  const [shadowLoading, setShadowLoading] = useState(false);
-  const [shadowError, setShadowError] = useState("");
-  const [shadowSuccess, setShadowSuccess] = useState("");
-
+  const { connected, publicKey, signMessage } = useWallet();
 
   // Form state
   const [recipient, setRecipient] = useState("");
@@ -71,52 +50,40 @@ const PayAnyone = () => {
   // Recent payments
   const [recentPayments, setRecentPayments] = useState([]);
 
+  // UI state
+  const [balance, setBalance] = useState({ available: 0 });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
+  const [checkingRecipient, setCheckingRecipient] = useState(false);
+  const [recipientExists, setRecipientExists] = useState(null);
 
   const tokens = getSupportedTokens();
   const quickAmounts = [0.1, 0.5, 1, 5, 10];
 
-  // Load wallet data
   useEffect(() => {
     if (connected && publicKey) {
-      loadWalletData();
+      loadBalance();
+      loadContacts();
+      loadRecentPayments();
     }
-  }, [connected, publicKey, connection]);
+  }, [connected, publicKey]);
 
-  const loadWalletData = async () => {
-    if (!publicKey || !connection) return;
+  useEffect(() => {
+    if (recipient && recipient.length >= 32) {
+      checkRecipient();
+    } else {
+      setRecipientExists(null);
+    }
+  }, [recipient]);
 
-    setLoading(true);
+  const loadBalance = async () => {
+    if (!publicKey) return;
     try {
-      const address = publicKey.toBase58();
-
-      // Load all data in parallel
-      const [balanceData, tokensData, txData, statsData] = await Promise.all([
-        getWalletBalance(address, connection),
-        getTokenBalances(address, connection),
-        getWalletTransactions(address, connection, 20),
-        getWalletStats(address, connection),
-      ]);
-
-      setBalance(balanceData);
-      setTokens(tokensData);
-      setTransactions(txData);
-      setStats(statsData);
-
-      // Try to load ShadowWire balance
-      try {
-        const shadowBal = await getShadowWireBalance(address, connection);
-        setShadowBalance(shadowBal);
-        // If we got balance, assume registered
-        setIsRecipient(true);
-      } catch (err) {
-        console.log("ShadowWire balance not available");
-        setShadowBalance(null);
-        setIsRecipient(false);
-      }
-    } catch (error) {
-      console.error("Error loading wallet data:", error);
-    } finally {
-      setLoading(false);
+      const bal = await getShadowWireBalance(publicKey.toBase58());
+      setBalance(bal);
+    } catch (err) {
+      console.error("Error loading balance:", err);
     }
   };
 
@@ -259,18 +226,18 @@ const PayAnyone = () => {
         </p>
       </div>
 
-          {/* Balance Display */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-xs sm:text-sm text-gray-400">SOL Balance</p>
-              <Wallet className="w-4 h-4 text-white" />
-            </div>
-            <p className="text-2xl sm:text-3xl font-bold text-white">
-              {balance.toFixed(4)}
+      {/* Balance Card */}
+      <div className="p-6 rounded-3xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-400 mb-1">Available Balance</p>
+            <p className="text-3xl font-bold text-white">
+               {balance.toFixed(4)} {selectedToken}
             </p>
-            <p className="text-xs text-gray-500 mt-1">Solana</p>
           </div>
+          <Wallet className="w-12 h-12 text-white/20" />
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Pay Form */}
@@ -602,4 +569,4 @@ const PayAnyone = () => {
   );
 };
 
-export default PayAnyone;
+export default PayAnyone; 

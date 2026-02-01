@@ -1,9 +1,9 @@
 // API Configuration
 export const API_CONFIG = {
-  // Alchemy Solana RPC
-  alchemy: {
-    devnet: "https://solana-devnet.g.alchemy.com/v2/xhh60CwGA8HcI7QauuFz7",
-    mainnet: "https://solana-mainnet.g.alchemy.com/v2/xhh60CwGA8HcI7QauuFz7",
+  // Helius Solana RPC
+  helius: {
+    devnet: "https://devnet.helius-rpc.com/?api-key=eb4c1be9-f523-43e3-b87a-38099801dc8f",
+    mainnet: "https://mainnet.helius-rpc.com/?api-key=eb4c1be9-f523-43e3-b87a-38099801dc8f",
   },
 
   // CoinGecko API

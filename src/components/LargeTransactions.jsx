@@ -138,7 +138,7 @@ const LargeTransactions = () => {
         <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs flex items-start space-x-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium mb-1">Using Alchemy Enhanced APIs</p>
+            <p className="font-medium mb-1">Using Helius Enhanced APIs</p>
             <p className="text-blue-300/80">
               {monitorMode === "recent"
                 ? "Scanning recent blocks for large transfers. Mainnet recommended for best results."
@@ -160,7 +160,7 @@ const LargeTransactions = () => {
         <div className="flex flex-col items-center justify-center h-48 space-y-3">
           <RefreshCw className="w-8 h-8 text-green-500 animate-spin" />
           <p className="text-gray-400 text-sm">
-            Scanning blockchain with Alchemy...
+            Scanning blockchain with Helius...
           </p>
         </div>
       ) : (

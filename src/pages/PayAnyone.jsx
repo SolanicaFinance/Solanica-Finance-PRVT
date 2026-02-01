@@ -14,6 +14,8 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { getWalletBalance } from "../utils/solanaService";
 import {
   getShadowWireBalance,
   makePrivateTransfer,
@@ -24,12 +26,17 @@ import {
 const PayAnyone = () => {
     const { connected, publicKey, signMessage } = useWallet();
 
-
-  // Form state
-  const [recipient, setRecipient] = useState("");
-  const [amount, setAmount] = useState("");
-  const [selectedToken, setSelectedToken] = useState("SOL");
-  const [quickAmount, setQuickAmount] = useState(null);
+ 
+  useEffect(() => {
+    // Fetch user's balance if connected
+    const fetchBalance = async () => {
+      if (connected && publicKey) {
+        const balance = await getWalletBalance(publicKey.toBase58());
+        setMyBalance(balance);
+      }
+    };
+    fetchBalance();
+  }, [connected, publicKey]);
 
   // Contact state
   const [contacts, setContacts] = useState([]);

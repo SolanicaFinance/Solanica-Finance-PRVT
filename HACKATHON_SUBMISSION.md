@@ -4,14 +4,14 @@ Track: Open Track + Privacy Tooling
 
 Repository: https://github.com/solanicafinance/
 
-Philosophy
+##Philosophy
+
 We believe financial privacy is a fundamental human right—as essential as freedom of speech and assembly.
-
 "Privacy is not about having something to hide. Privacy is about having something to protect."
-
 Read our full philosophical background: PHILOSOPHY.md.
 
-How It Works
+##How It Works
+
 ShadowWire Flow (Bulletproofs):
 Stealth Transfer:
 
@@ -25,14 +25,14 @@ Stealth: Maximum privacy, one-time addresses
 Mixed: Balanced privacy/cost
 Public: Minimal privacy, lowest cost.
 
-Bounty-Specific Requirements
+##Bounty-Specific Requirements
 
 Radr Labs ($10k)
-✅ ShadowWire Integration (Bulletproofs)
-✅ Bulletproofs + ElGamal encryption
-✅ External and Internal modes
-✅ API client fully implemented
-✅ Stealth mode transfers
+✅ ShadowWire Integration (Bulletproofs).
+✅ Bulletproofs + ElGamal encryption.
+✅ External and Internal modes.
+✅ API client fully implemented.
+✅ Stealth mode transfers.
 
 Track 01: Private Payments ($15k)
 ✅ Private transfer functionality
@@ -52,10 +52,30 @@ Encrypt.trade ($500)
 ✅ Visual demonstrations
 ✅ Best practices for whales
 
-Links
-GitHub: https://github.com/psyto/veil
+##Hackathon Details
 
-Acknowledgments
+Item	Details
+Dates	January 12-30, 2026
+Submission Deadline	February 1, 2026
+Winners Announced	February 10, 2026
+Total Prize Pool	$100,000+ (tracks) + $100,000+ (bounties)
+
+##Tracks
+
+Track	Prize	Description
+Private Payments	$15,000	Confidential or private transfers on Solana
+Privacy Tooling	$15,000	Tools and infrastructure for privacy development
+Open Track	$18,000	Any privacy application on Solana
+
+##Relevant Sponsor Bounties
+
+Sponsor	Prize	Technology
+Radr Labs (ShadowWire)	$15,000	Bulletproofs for private transfers
+Light Protocol	Part of Open Track	ZK compression (~99% reduction)
+Helius	$5,000	Best privacy project using Helius
+
+##Acknowledgments
+
 Light Protocol - ZK compression
 Shadow Wire - Shielded transfers
 Helius - RPC infrastructure

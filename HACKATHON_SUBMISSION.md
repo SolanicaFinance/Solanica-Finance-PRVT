@@ -60,4 +60,4 @@ Light Protocol - ZK compression
 Shadow Wire - Shielded transfers
 Helius - RPC infrastructure
 Quicknode - RPC infrastructure
-Anchor - Solana framework
+Anchor - Solana framewo

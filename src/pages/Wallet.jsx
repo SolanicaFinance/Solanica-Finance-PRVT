@@ -958,7 +958,7 @@ const WalletManagement = () => {
                       RPC Endpoint
                     </p>
                     <p className="text-xs sm:text-sm text-gray-400 truncate">
-                      Alchemy Solana
+                      Helius Solana
                     </p>
                   </div>
                   <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0" />

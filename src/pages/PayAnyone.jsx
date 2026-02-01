@@ -24,7 +24,6 @@ import {
   getTransactionType,
 } from "../utils/solanaService";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { getWalletBalance } from "../utils/solanaService";
 import {
   getShadowWireBalance,
   makePrivateTransfer,
@@ -37,10 +36,7 @@ const PayAnyone = () => {
   const { connection } = useConnection();
 
   // State
-  const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState(0);
-  const [shadowBalance, setShadowBalance] = useState(null);
-  const [tokens, setTokens] = useState([]);
+  const [balance, setBalance] = useState(0);;
   const [transactions, setTransactions] = useState([]);
 
 

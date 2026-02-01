@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import {
   Send,
   Wallet,
@@ -14,16 +14,7 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import {
-  getWalletBalance,
-  getWalletTransactions,
-  getTokenBalances,
-  getWalletStats,
-  formatAddress,
-  formatTimestamp,
-  getTransactionType,
-} from "../utils/solanaService";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { getWalletBalance } from "../utils/solanaService";
 import {
   getShadowWireBalance,
   makePrivateTransfer,
@@ -32,65 +23,14 @@ import {
 } from "../utils/shadowwireService";
 
 const PayAnyone = () => {
-  const { connected, publicKey, signMessage, disconnect, wallet } = useWallet();
-  const { connection } = useConnection();
+  const { connected, publicKey, signMessage } = useWallet();
 
-  // State
-  const [balance, setBalance] = useState(0);;
-  const [transactions, setTransactions] = useState([]);
+  // Form state
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [selectedToken, setSelectedToken] = useState("SOL");
+  const [quickAmount, setQuickAmount] = useState(null);
 
-
-  // ShadowWire state
-  const [shadowMode, setShadowMode] = useState("deposit"); // 'deposit' or 'withdraw'
-  const [shadowLoading, setShadowLoading] = useState(false);
-  const [shadowSuccess, setShadowSuccess] = useState("");
-
-  // Load wallet data
-  useEffect(() => {
-    if (connected && publicKey) {
-      loadWalletData();
-    }
-  }, [connected, publicKey, connection]);
-
-  const loadWalletData = async () => {
-    if (!publicKey || !connection) return;
-
-    setLoading(true);
-    try {
-      const address = publicKey.toBase58();
-
-      // Load all data in parallel
-      const [balanceData, tokensData, txData, statsData] = await Promise.all([
-        getWalletBalance(address, connection),
-        getTokenBalances(address, connection),
-        getWalletTransactions(address, connection, 20),
-        getWalletStats(address, connection),
-      ]);
-
-      setBalance(balanceData);
-      setTokens(tokensData);
-      setTransactions(txData);
-      setStats(statsData);
-
-      // Try to load ShadowWire balance
-      try {
-        const shadowBal = await getShadowWireBalance(address, connection);
-        setShadowBalance(shadowBal);
-        // If we got balance, assume registered
-        setIsRecipient(true);
-      } catch (err) {
-        console.log("ShadowWire balance not available");
-        setShadowBalance(null);
-        setIsRecipient(false);
-      }
-    } catch (error) {
-      console.error("Error loading wallet data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
   // Contact state
   const [contacts, setContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,6 +42,7 @@ const PayAnyone = () => {
   const [recentPayments, setRecentPayments] = useState([]);
 
   // UI state
+  const [balance, setBalance] = useState({ available: 0 });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -282,7 +223,7 @@ const PayAnyone = () => {
           <div>
             <p className="text-sm text-gray-400 mb-1">Available Balance</p>
             <p className="text-3xl font-bold text-white">
-              {balance.available.toFixed(4)} {selectedToken}
+               {myBalance.toFixed(4)} {selectedToken}
             </p>
           </div>
           <Wallet className="w-12 h-12 text-white/20" />

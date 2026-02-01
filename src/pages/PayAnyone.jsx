@@ -14,13 +14,24 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { getWalletBalance } from "../utils/solanaService";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import {
+  getWalletBalance,
+  getWalletTransactions,
+  getTokenBalances,
+  getWalletStats,
+  formatAddress,
+  formatTimestamp,
+  getTransactionType,
+} from "../utils/solanaService";
 import {
   getShadowWireBalance,
-  makePrivateTransfer,
-  checkRecipientExists,
-  getSupportedTokens,
+  depositToShadowWire,
+  withdrawFromShadowWire,
+  registerAsRecipient,
 } from "../utils/shadowwireService";
+import { API_CONFIG } from "../utils/apiConfig";
+
 
 const PayAnyone = () => {
   const { connected, publicKey, signMessage } = useWallet();
@@ -217,17 +228,18 @@ const PayAnyone = () => {
         </p>
       </div>
 
-    {/* Your Balance */}
-        <div className="p-5 md:p-6 rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-400 font-medium">Your Balance</p>
-            <Wallet className="w-5 h-5 text-blue-400" />
+      {/* Balance Display */}
+      <div className="p-6 rounded-3xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-gray-400 mb-1">Available Balance</p>
+            <p className="text-3xl font-bold text-white">
+                {balance.toFixed(4)} {selectedToken}
+            </p>
           </div>
-          <p className="text-2xl md:text-3xl font-bold text-white mb-1">
-            {myBalance.toFixed(4)}
-          </p>
-          <p className="text-xs md:text-sm text-gray-500">SOL</p>
+          <Wallet className="w-12 h-12 text-white/20" />
         </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Quick Pay Form */}
@@ -560,3 +572,4 @@ const PayAnyone = () => {
 };
 
 export default PayAnyone;
+  

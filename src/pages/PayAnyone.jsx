@@ -1,4 +1,4 @@
- import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import {
   Send,
@@ -14,16 +14,6 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import {
-  getWalletBalance,
-  getWalletTransactions,
-  getTokenBalances,
-  getWalletStats,
-  formatAddress,
-  formatTimestamp,
-  getTransactionType,
-} from "../utils/solanaService";
 import {
   getShadowWireBalance,
   makePrivateTransfer,
@@ -231,8 +221,8 @@ const PayAnyone = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-400 mb-1">Available Balance</p>
-            <p className="text-3xl font-bold text-white">
-               {balance.toFixed(4)} {selectedToken}
+              <p className="text-2xl sm:text-3xl font-bold text-white">
+              {balance.toFixed(4)}
             </p>
           </div>
           <Wallet className="w-12 h-12 text-white/20" />
@@ -569,4 +559,4 @@ const PayAnyone = () => {
   );
 };
 
-export default PayAnyone; 
+export default PayAnyone;

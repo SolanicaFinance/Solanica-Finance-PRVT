@@ -5,8 +5,8 @@ import { API_CONFIG } from "./apiConfig";
 const getConnection = () => {
   const endpoint =
     API_CONFIG.network === "mainnet"
-      ? API_CONFIG.alchemy.mainnet
-      : API_CONFIG.alchemy.devnet;
+      ? API_CONFIG.helius.mainnet
+      : API_CONFIG.helius.devnet;
   return new Connection(endpoint, "confirmed");
 };
 

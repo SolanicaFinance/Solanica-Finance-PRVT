@@ -107,7 +107,6 @@ const PayAnyone = () => {
   const [recentPayments, setRecentPayments] = useState([]);
 
   // UI state
-  const [balance, setBalance] = useState({ available: 0 });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");

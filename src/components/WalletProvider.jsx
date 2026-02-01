@@ -15,8 +15,8 @@ const WalletProvider = ({ children }) => {
   // Use Alchemy RPC endpoint from API_CONFIG
   const endpoint = useMemo(() => {
     return API_CONFIG.network === "mainnet"
-      ? API_CONFIG.alchemy.mainnet
-      : API_CONFIG.alchemy.devnet;
+      ? API_CONFIG.helius.mainnet
+      : API_CONFIG.helius.devnet;
   }, []);
 
   // Configure wallet adapters

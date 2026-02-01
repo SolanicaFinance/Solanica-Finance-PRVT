@@ -10,7 +10,7 @@ import { formatAddress, formatTimestamp } from "../utils/solanaService";
 import {
   getLargeSOLTransfers,
   monitorHighVolumeWallets,
-} from "../utils/AlchemyService";
+} from "../utils/HeliusService";
 import { API_CONFIG } from "../utils/apiConfig";
 
 const LargeTransactions = () => {

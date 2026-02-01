@@ -603,4 +603,3 @@ const PayAnyone = () => {
 };
 
 export default PayAnyone;
-  

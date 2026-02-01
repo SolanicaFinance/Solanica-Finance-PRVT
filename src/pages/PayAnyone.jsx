@@ -22,7 +22,7 @@ import {
   formatAddress,
   formatTimestamp,
   getTransactionType,
-} from "../utils/solanaService"
+} from "../utils/solanaService";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getWalletBalance } from "../utils/solanaService";
 import {
@@ -48,7 +48,6 @@ const PayAnyone = () => {
   const [shadowMode, setShadowMode] = useState("deposit"); // 'deposit' or 'withdraw'
   const [shadowLoading, setShadowLoading] = useState(false);
   const [shadowSuccess, setShadowSuccess] = useState("");
-  const [isRecipient, setIsRecipient] = useState(false);
 
   // Load wallet data
   useEffect(() => {

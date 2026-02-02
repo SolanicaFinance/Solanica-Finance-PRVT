@@ -1,4 +1,4 @@
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { Connection, PublicKey, LAMPORTS_PER_SOL, clusterApiUrl } from "@solana/web3.js";
 import { API_CONFIG } from "./apiConfig";
 
 // Initialize connection
@@ -10,20 +10,40 @@ const getConnection = () => {
   return new Connection(endpoint, "confirmed");
 };
 
+
 /**
- * Get wallet balance
+ * Create a Solana connection (you can change 'mainnet-beta' to 'devnet' or 'testnet')
+ */
+const getConnection = () => {
+  return new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+};
+
+/**
+ * Get the balance of a Solana wallet in SOL
+ * @param {string} walletAddress - The wallet's public key as a base58 string
+ * @returns {Promise<number>} - Balance in SOL
  */
 export const getWalletBalance = async (walletAddress) => {
   try {
+    // Validate input
+    if (typeof walletAddress !== "string" || walletAddress.trim() === "") {
+      throw new Error("Invalid wallet address format.");
+    }
+
     const connection = getConnection();
     const publicKey = new PublicKey(walletAddress);
-    const balance = await connection.getBalance(publicKey);
-    return balance / LAMPORTS_PER_SOL;
+
+    // Fetch balance in lamports
+    const balanceLamports = await connection.getBalance(publicKey);
+
+    // Convert lamports to SOL
+    return balanceLamports / LAMPORTS_PER_SOL;
   } catch (error) {
-    console.error("Error fetching wallet balance:", error);
-    return 0;
+    console.error("Error fetching wallet balance:", error.message);
+    return 0; // Return 0 if there's an error
   }
 };
+
 
 /**
  * Get wallet transaction history

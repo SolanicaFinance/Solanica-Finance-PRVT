@@ -11,14 +11,7 @@ const getConnection = () => {
 };
 
 
-/**
- * Create a Solana connection (you can change 'mainnet-beta' to 'devnet' or 'testnet')
- */
-const getConnection = () => {
-  return new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
-};
 
-/**
  * Get the balance of a Solana wallet in SOL
  * @param {string} walletAddress - The wallet's public key as a base58 string
  * @returns {Promise<number>} - Balance in SOL

@@ -10,24 +10,18 @@ const getConnection = () => {
   return new Connection(endpoint, "confirmed");
 };
 
-
+/**
+ * Get wallet balance
+ */
 export const getWalletBalance = async (walletAddress) => {
   try {
-    // Validate input
-    if (typeof walletAddress !== "string" || walletAddress.trim() === "") {
-      throw new Error("Invalid wallet address format.");
-    }
-
+    const connection = getConnection();
     const publicKey = new PublicKey(walletAddress);
-
-    // Fetch balance in lamports
-    const balanceLamports = await connection.getBalance(publicKey);
-
-    // Convert lamports to SOL
-    return balanceLamports / LAMPORTS_PER_SOL;
+    const balance = await connection.getBalance(publicKey);
+    return balance / LAMPORTS_PER_SOL;
   } catch (error) {
-    console.error("Error fetching wallet balance:", error.message);
-    return 0; // Return 0 if there's an error
+    console.error("Error fetching wallet balance:", error);
+    return 0;
   }
 };
 
@@ -73,32 +67,39 @@ export const getWalletTransactions = async (walletAddress, limit = 10) => {
  */
 export const getTokenBalances = async (walletAddress) => {
   try {
-    const connection = getConnection();
+    // Validate wallet address
+    if (!walletAddress || typeof walletAddress !== "string") {
+      throw new Error("Invalid wallet address");
+    }
+
+    // Create connection to Solana mainnet (change to 'devnet' if needed)
+    const connection = new Connection(clusterApiUrl("mainnet-beta"), "confirmed");
+
     const publicKey = new PublicKey(walletAddress);
 
-    // Get all token accounts
+    // Get all token accounts owned by the wallet
     const tokenAccounts = await connection.getParsedTokenAccountsByOwner(
       publicKey,
       {
-        programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+        programId: new PublicKey(
+          "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" // SPL Token Program ID
+        ),
       }
     );
 
-    const tokens = tokenAccounts.value
-      .map((accountInfo) => {
-        const parsedInfo = accountInfo.account.data.parsed.info;
-        return {
-          mint: parsedInfo.mint,
-          balance: parsedInfo.tokenAmount.uiAmount,
-          decimals: parsedInfo.tokenAmount.decimals,
-          uiAmountString: parsedInfo.tokenAmount.uiAmountString,
-        };
-      })
-      .filter((token) => token.balance > 0);
+    // Parse balances
+    const balances = tokenAccounts.value.map(({ account }) => {
+      const parsedInfo = account.data.parsed.info;
+      const mint = parsedInfo.mint;
+      const amount = parsedInfo.tokenAmount.uiAmount; // Human-readable amount
+      const decimals = parsedInfo.tokenAmount.decimals;
 
-    return tokens;
+      return { mint, amount, decimals };
+    });
+
+    return balances;
   } catch (error) {
-    console.error("Error fetching token balances:", error);
+    console.error("Error fetching token balances:", error.message);
     return [];
   }
 };

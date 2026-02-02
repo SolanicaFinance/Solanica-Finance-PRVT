@@ -11,11 +11,6 @@ const getConnection = () => {
 };
 
 
-
- * Get the balance of a Solana wallet in SOL
- * @param {string} walletAddress - The wallet's public key as a base58 string
- * @returns {Promise<number>} - Balance in SOL
- */
 export const getWalletBalance = async (walletAddress) => {
   try {
     // Validate input

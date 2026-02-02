@@ -30,7 +30,6 @@ export const getWalletBalance = async (walletAddress) => {
       throw new Error("Invalid wallet address format.");
     }
 
-    const connection = getConnection();
     const publicKey = new PublicKey(walletAddress);
 
     // Fetch balance in lamports
